@@ -1,6 +1,7 @@
 package eu.acme.demo.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.domain.Persistable;
 
@@ -15,6 +16,7 @@ import java.util.UUID;
  * @author lprotopapas
  */
 @MappedSuperclass
+@Data
 abstract public class PersistableEntity implements Persistable<UUID>, Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -44,14 +46,5 @@ abstract public class PersistableEntity implements Persistable<UUID>, Serializab
     @Override
     public int hashCode() {
         return getId() == null ? 0 : getId().hashCode();
-    }
-
-    @Override
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 }

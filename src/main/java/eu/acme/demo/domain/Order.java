@@ -1,12 +1,14 @@
 package eu.acme.demo.domain;
 
 import eu.acme.demo.domain.enums.OrderStatus;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "orders")
+@Data
 public class Order extends AuditableEntity {
 
     @Column(name = "ref_code", length = 30, nullable = false)
@@ -25,43 +27,4 @@ public class Order extends AuditableEntity {
     @Column(name = "status", length = 20, nullable = false)
     private OrderStatus status;
 
-    public String getClientReferenceCode() {
-        return clientReferenceCode;
-    }
-
-    public void setClientReferenceCode(String orderCode) {
-        this.clientReferenceCode = orderCode;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public BigDecimal getItemTotalAmount() {
-        return itemTotalAmount;
-    }
-
-    public void setItemTotalAmount(BigDecimal itemTotalAmount) {
-        this.itemTotalAmount = itemTotalAmount;
-    }
-
-    public int getItemCount() {
-        return itemCount;
-    }
-
-    public void setItemCount(int itemCount) {
-        this.itemCount = itemCount;
-    }
-
-    public OrderStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
 }
