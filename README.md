@@ -44,3 +44,4 @@ The following guides illustrate how to use some features concretely:
 ###Libraries Introduced
  The following extra libraries were introduced
  * [Lombok](https://projectlombok.org/)
+ * [Springfox](http://springfox.github.io/springfox/)
