@@ -1,11 +1,19 @@
 package eu.acme.demo.web.dto;
 
+import eu.acme.demo.domain.enums.OrderStatus;
 import lombok.Data;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class OrderRequest {
 
-    String clientReferenceCode;
+    private String clientReferenceCode;
+    private List<OrderItemDto> orderItemDtos;
+    private String description;
+    private BigDecimal itemTotalAmount;
+    private int itemCount;
+    private OrderStatus status;
 
-    //TODO: place required fields in order to create an order submitted by client
 }

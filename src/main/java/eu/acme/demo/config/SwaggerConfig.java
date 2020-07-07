@@ -1,22 +1,26 @@
 package eu.acme.demo.config;
 
 import com.fasterxml.classmate.TypeResolver;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import eu.acme.demo.handlers.ErrorResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.builders.ParameterBuilder;
+import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.builders.ResponseMessageBuilder;
 import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.service.Parameter;
+import springfox.documentation.service.ResponseMessage;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -27,18 +31,28 @@ public class SwaggerConfig {
 
     private static final List<Parameter> headerParameters = Collections.emptyList();
 
-    private static final String HEADER = "header";
-    private static final String STRING = "string";
+    private static final ModelRef ERROR_RESPONSE_MODEL_REF = new ModelRef("errorResponseDto");
 
-    private static final List<Parameter> HEADER_PARAMETERS = Lists.newArrayList(
-            new ParameterBuilder().name("Authorization")
-                    .modelRef(new ModelRef(STRING))
-                    .parameterType(HEADER)
-                    .required(true)
-                    .description(
-                            "Basic Authorization Required")
+    private static final List<ResponseMessage> RESPONSE_MESSAGES = Arrays.asList(
+            new ResponseMessageBuilder()
+                    .code(HttpServletResponse.SC_BAD_REQUEST)
+                    .message("Bad request")
+                    .responseModel(ERROR_RESPONSE_MODEL_REF)
+                    .build(),
+            new ResponseMessageBuilder()
+                    .code(HttpServletResponse.SC_NOT_FOUND)
+                    .message("Not found")
+                    .responseModel(ERROR_RESPONSE_MODEL_REF)
+                    .build(),
+            new ResponseMessageBuilder()
+                    .code(HttpServletResponse.SC_INTERNAL_SERVER_ERROR)
+                    .message("Internal server error")
+                    .responseModel(ERROR_RESPONSE_MODEL_REF)
                     .build()
     );
+
+    private static final String HEADER = "header";
+    private static final String STRING = "string";
 
     private BuildProperties buildProperties;
 
@@ -63,10 +77,14 @@ public class SwaggerConfig {
                 )
                 .build()
                 .globalOperationParameters(headerParameters)
+                .globalResponseMessage(RequestMethod.GET, RESPONSE_MESSAGES)
+                .globalResponseMessage(RequestMethod.POST, RESPONSE_MESSAGES)
+                .globalResponseMessage(RequestMethod.PUT, RESPONSE_MESSAGES)
+                .globalResponseMessage(RequestMethod.DELETE, RESPONSE_MESSAGES)
+                .additionalModels(typeResolver.resolve(ErrorResponseDto.class))
                 .produces(Collections.singleton("application/json"))
                 .consumes(Collections.singleton("application/json"))
                 .protocols(PROTOCOLS)
-                .globalOperationParameters(HEADER_PARAMETERS)
                 .apiInfo(apiInfo());
     }
 
